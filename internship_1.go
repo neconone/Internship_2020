@@ -1,20 +1,59 @@
 package main
 
-import "fmt"
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"regexp"
+	"sort"
+)
 
-func findAbbre(fullname []string) {
-	fmt.Println(fullname[4])
+func sortName(abbreName []string) []string {
+	sort.Slice(abbreName, func(i, j int) bool {
+		if len(abbreName[i]) > len(abbreName[j]) {
+			return true
+		}
+		if len(abbreName[i]) < len(abbreName[j]) {
+			return false
+		}
+		return abbreName[i] < abbreName[j]
+	})
+	return abbreName
+}
+
+func findAbbre(fullName []string) []string {
+	var abbreName []string
+	abbreName = make([]string, len(fullName))
+	isUpper := regexp.MustCompile(`[A-Z][^A-Z]*`)
+	for i := 0; i < len(fullName); i++ {
+		subString := isUpper.FindAllString(fullName[i], -1)
+		for _, element := range subString {
+			abbreName[i] = abbreName[i] + element[0:1]
+		}
+	}
+	return abbreName
 }
 
 func main() {
-	var fullname []string
+	var fullName []string
 	var size int
 	fmt.Print("Enter the number of your input : ")
 	fmt.Scanln(&size)
-	fullname = make([]string, size)
+	fullName = make([]string, size)
 	for i := 0; i < size; i++ {
-		fmt.Printf("Input number %d : ", (i + 1))
-		fmt.Scanln(&fullname[i])
+		fmt.Print("Input number ", (i + 1), " : ")
+		in := bufio.NewReader(os.Stdin)
+		fullName[i], _ = in.ReadString('\n')
 	}
-	findAbbre(fullname)
+	abbreName := findAbbre(fullName)
+	sortedName := sortName(abbreName)
+	fmt.Println("Size : ", size)
+	fmt.Printf("Input\n\n")
+	for i := 0; i < size; i++ {
+		fmt.Println("	", fullName[i])
+	}
+	fmt.Printf("----------------------------------\n\nOutput\n\n")
+	for i := 0; i < len(sortedName); i++ {
+		fmt.Println("	", sortedName[i])
+	}
 }
