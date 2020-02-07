@@ -6,6 +6,7 @@ import (
 	"os"
 	"regexp"
 	"sort"
+	"strings"
 )
 
 func sortName(abbreName []string) []string {
@@ -44,6 +45,7 @@ func main() {
 		fmt.Print("Input number ", (i + 1), " : ")
 		in := bufio.NewReader(os.Stdin)
 		fullName[i], _ = in.ReadString('\n')
+		fullName[i] = strings.TrimSpace(fullName[i])
 	}
 	abbreName := findAbbre(fullName)
 	sortedName := sortName(abbreName)
